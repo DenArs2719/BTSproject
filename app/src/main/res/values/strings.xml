@@ -1,3 +1,16 @@
 <resources>
-    <string name="app_name">BTSproject</string>
+    <string name="app_name">My Movies</string>
+    <string name="poster_of_movie">Poster to Film</string>
+    <string name="most_popular">Most popular</string>
+    <string name="top_rated">Top rated</string>
+    <string name="title">Title:</string>
+    <string name="original_title">Original Title:</string>
+    <string name="rating">Rating:</string>
+    <string name="release_date">Release date:</string>
+    <string name="description">Description:</string>
+    <string name="added_to_favourite">Added to favourite</string>
+    <string name="deleted_from_favourite">Removed from favourite</string>
+    <string name="itemMain">Main</string>
+    <string name="itemFavourite">Favourite</string>
+    <string name="play_trailer">Play trailer</string>
 </resources>
