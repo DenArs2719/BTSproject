@@ -77,7 +77,6 @@ public class TrailerAdapter extends RecyclerView.Adapter<TrailerAdapter.TrailerV
         this.onTrailerClickListener = onTrailerClickListener;
     }
 
-
     public void setTrailers(ArrayList<Trailer> trailers)
     {
         this.trailers = trailers;
