@@ -30,10 +30,10 @@ public class ReviewAdapter extends RecyclerView.Adapter<ReviewAdapter.ReviewView
     @Override
     public void onBindViewHolder(@NonNull ReviewViewHolder holder, int position)
     {
-        ///получаем наш отзыв
+        ///get our review
         Review review = reviews.get(position);
 
-        ///устанавливаем полученные данные
+        ///setting received data
         holder.textViewContent.setText(review.getContent());
         holder.textViewAuthor.setText(review.getAuthor());
     }
@@ -63,7 +63,7 @@ public class ReviewAdapter extends RecyclerView.Adapter<ReviewAdapter.ReviewView
     {
         this.reviews = reviews;
 
-        ///сообщаем адаптеру ,что данные изменились
+        ///telling to our adapter about changing data
         notifyDataSetChanged();
     }
 }

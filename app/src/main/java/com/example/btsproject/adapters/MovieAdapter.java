@@ -28,13 +28,13 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHol
         movies = new ArrayList<>();
     }
 
-    ///интерфейс для обработки нажатия на фильм(постер)
+    ///interface for processing touching to film(poster)
     public interface OnPosterClickListener
     {
         void onPosterClick(int position);
     }
 
-    ///интерфейс для подгрузки фильмом,когда пользователь долистал до конца первую старницу и т.д
+    ///interface for load films,if user go to end of list (after it will load more films)
     public interface OnReachEndListener
     {
         void onReachEnd();
@@ -44,7 +44,7 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHol
     @Override
     public MovieViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType)
     {
-        ///создаем наш View
+        ///making our View
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.movie_item,parent,false);
         return new MovieViewHolder(view);
     }
@@ -52,17 +52,17 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHol
     @Override
     public void onBindViewHolder(@NonNull MovieViewHolder holder, int position)
     {
-        ///подгружаем данные, когда пользователь практически дошел до конца списка
+        ///add data, if user go to end of list (after it will load more films)
         if(movies.size()>=20 && position > movies.size() - 4 && onReachEndListener != null)
         {
             onReachEndListener.onReachEnd();
         }
-        ///получаем фильм
+        ///getting film
         Movie movie = movies.get(position);
-        ///получем картинку
+        ///getting picture
         ImageView imageView = holder.imageViewSmallPoster;
 
-        ///работаем с Picasso , и загружаем изображение
+        ///working with Picasso and download picture
         Picasso.get().load(movie.getPosterPath()).into(imageView);
     }
 
@@ -76,7 +76,7 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHol
     {
         this.movies.addAll(movies);
 
-        ///когда добавили новые элементы,оповешаем об этом наш адаптер
+        ///when we add new elements,telling it to our adapter
         notifyDataSetChanged();
     }
 
@@ -90,7 +90,7 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHol
     {
         this.movies.clear();
 
-        ///оповешаем адаптер о том ,что произошли изменения
+        ///telling to our adapter about changes
         notifyDataSetChanged();
     }
 
@@ -98,7 +98,7 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHol
     {
         this.movies = movies;
 
-        ///когда добавили новые элементы,оповешаем об этом наш адаптер
+        ///when we set elements,telling it to our adapter
         notifyDataSetChanged();
     }
 
