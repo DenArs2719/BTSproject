@@ -65,14 +65,14 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         return super.onCreateOptionsMenu(menu);
     }
 
-    ///метод для возможности нажатия на элементы меню
+    /// Method for menu element click events
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item)
     {
-        ///получаем id элемента на который нажали
+        /// Get clicked element id
         int itemId = item.getItemId();
 
-        ///выбираем ,на что нажали
+        /// Is clicked element favourite or chosen from menu
         switch (itemId)
         {
             case R.id.itemMain:
@@ -93,8 +93,8 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        ///ипользуется паттерн SINGLETON
-        ///отвечает за все загрузки, которые происходят в приложении
+        /// Singleton pattern
+        /// Manages all media loads in app
         loaderManager = LoaderManager.getInstance(this);
 
         recyclerViewPosters = findViewById(R.id.recyclerViewPosters);
@@ -107,16 +107,16 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
 
         adapter = new MovieAdapter();
 
-        ///чтобы фильмы загрузились сразу
+        /// To load movies at the beginning
         switchSort.setChecked(true);
 
         recyclerViewPosters.setLayoutManager(new GridLayoutManager(this,2));
 
-        ///устанавливаем адаптер в recyclerViewPosters
+        /// Setting adapter to recyclerViewPosters
         recyclerViewPosters.setAdapter(adapter);
 
 
-        ///устанавливаем слушатель
+        /// Setting event listener
         switchSort.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener()
         {
             @Override
@@ -128,16 +128,16 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         });
         switchSort.setChecked(false);
 
-        ///обработка нажатия на фильм
+        /// Movie item click event
         adapter.setOnPosterClickListener(new MovieAdapter.OnPosterClickListener()
         {
             @Override
             public void onPosterClick(int position)
             {
-                ///получаем фильм на который нажали
+                /// getting movies from API
                 Movie movie = adapter.getMovies().get(position);
 
-                ///создаем Intent
+                /// creating Intent
                 Intent intent = new Intent(MainActivity.this,DetailActivity.class);
                 intent.putExtra("id",movie.getId());
                 startActivity(intent);
@@ -157,14 +157,14 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         });
 
         LiveData<List<Movie>> moviesFromLifeData = viewModel.getMovies();
-        ///добавляем observer
+        /// adding observer
         moviesFromLifeData.observe(this, new Observer<List<Movie>>()
         {
-            ///Теперь ,когда каждый раз данные будут меняться в базе.Мы будем их устанавливать у adapter
+            /// Every time when data will be changed in database we will install it inside adapter
             @Override
             public void onChanged(List<Movie> movies)
             {
-                ///делаем в случаи отсутсвия интернета
+                /// If internet connection is not available
                 if(pageNumber == 1)
                 {
                     adapter.setMovies(movies);
@@ -209,19 +209,19 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
 
     private void downloadData(int methodOfSort, int page)
     {
-        ///формируем URL
+        /// Creating URL
         URL url = NetworkUtils.buildURL(methodOfSort,page);
 
-        ///создаем bundle
+        /// Creating bundle
         Bundle bundle = new Bundle();
 
-        ///вставляем данные
+        /// Inserting data
         bundle.putString("url",url.toString());
 
-        ///запускаем загрузчик
-        ///метод проверит:
-        ///-существует ли уже загрузчик , создаст если не существует
-        ///- если существует, то он его просто перезапустит
+        /// Starting loader
+        /// Method will check:
+        /// if loader exists. It will be created if not.
+        /// if loader exists it will be restarted.
         loaderManager.restartLoader(LOADER_ID,bundle,this);
     }
 
@@ -229,10 +229,10 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     @Override
     public Loader<JSONObject> onCreateLoader(int id, @Nullable Bundle bundle)
     {
-        ///создаем наш загрузчик
+        /// Creating loader
         NetworkUtils.JSONLoader jsonLoader = new NetworkUtils.JSONLoader(this,bundle);
 
-        ///добавляем слушатель к загрузчику(начало загрузки данных)
+        /// Creating event listener to loader(start of data load);
         jsonLoader.setOnStartLoadingListener(new NetworkUtils.JSONLoader.OnStartLoadingListener() {
             @Override
             public void onStartLoading()
@@ -244,28 +244,28 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         return jsonLoader;
     }
 
-    ///завершение загрузки
+    /// End of data load
     @Override
     public void onLoadFinished(@NonNull Loader<JSONObject> loader, JSONObject jsonObject)
     {
-        ///получем список фильмом
+        /// Getting movies list
         ArrayList<Movie> movies = JSONUtils.getMoviesFromJSON(jsonObject);
 
-        ///если пришли новые данные, то мы их загрузим
+        /// load new data if it appeared
         if(movies != null && !movies.isEmpty())
         {
 
-            ///если фильмы удачно загружены, то удаляем фильмы из базы данных и у адаптера
+            /// if movies were successfully loaded adapter database should be cleared
             if(pageNumber == 1)
             {
-                ///отчистим предыдушие данные
+                /// clear previous data
                 viewModel.deleteAllMovies();
                 adapter.clear();
             }
 
             for(Movie movie: movies)
             {
-                ///и вставим новые данные
+                /// insert new data
                 viewModel.insertMovie(movie);
             }
 
@@ -274,10 +274,10 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
             progressBarLoading.setVisibility(View.INVISIBLE);
         }
 
-        ///после загрузки данных,нам необходимо удалить загрузчик
+        /// after data load deleting loader
         loaderManager.destroyLoader(LOADER_ID);
 
-        ///когда загрузка данных завершена
+        /// when data load completed
         isLoading = false;
     }
 
@@ -285,5 +285,4 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     public void onLoaderReset(@NonNull Loader<JSONObject> loader) {
 
     }
-}
 }
