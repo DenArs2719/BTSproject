@@ -274,10 +274,10 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
             progressBarLoading.setVisibility(View.INVISIBLE);
         }
 
-        /// after data load deleting loader
+        /// Deleting loader after data load
         loaderManager.destroyLoader(LOADER_ID);
 
-        /// when data load completed
+        /// is data load completed
         isLoading = false;
     }
 
