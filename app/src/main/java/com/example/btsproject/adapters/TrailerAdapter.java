@@ -18,7 +18,7 @@ public class TrailerAdapter extends RecyclerView.Adapter<TrailerAdapter.TrailerV
 
     private ArrayList<Trailer> trailers;
 
-    ///добавляем слушателя
+    ///add listener
     private OnTrailerClickListener onTrailerClickListener;
 
     public interface OnTrailerClickListener
@@ -37,7 +37,7 @@ public class TrailerAdapter extends RecyclerView.Adapter<TrailerAdapter.TrailerV
     @Override
     public void onBindViewHolder(@NonNull TrailerViewHolder holder, int position)
     {
-        ///получаем наш trailer
+        ///get our trailer
         Trailer trailer = trailers.get(position);
 
         holder.textViewNameOfVideo.setText(trailer.getName());
@@ -82,7 +82,7 @@ public class TrailerAdapter extends RecyclerView.Adapter<TrailerAdapter.TrailerV
     {
         this.trailers = trailers;
 
-        ///говорим адаптеру,что данные изменились
+        ///tell to our adapter,that data has changed
         notifyDataSetChanged();
     }
 }
