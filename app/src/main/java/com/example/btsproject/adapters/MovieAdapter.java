@@ -1,5 +1,6 @@
 package com.example.btsproject.adapters;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,6 +11,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.btsproject.R;
 import com.example.btsproject.data.Movie;
+import com.example.btsproject.model.Result;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
@@ -17,7 +19,7 @@ import java.util.List;
 
 public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHolder>
 {
-    private List<Movie> movies;
+    private List<Result> movies;
 
 
     private OnPosterClickListener onPosterClickListener;
@@ -33,6 +35,7 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHol
     {
         void onPosterClick(int position);
     }
+
 
     ///interface for load films,if user go to end of list (after it will load more films)
     public interface OnReachEndListener
@@ -53,18 +56,21 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHol
     public void onBindViewHolder(@NonNull MovieViewHolder holder, int position)
     {
         ///add data, if user go to end of list (after it will load more films)
-        if(movies.size()>=20 && position > movies.size() - 4 && onReachEndListener != null)
+        if(position == movies.size()-1  && onReachEndListener != null)
         {
             onReachEndListener.onReachEnd();
         }
         ///getting film
-        Movie movie = movies.get(position);
+        //Movie movie = movies.get(position);
+        Result movie = movies.get(position);
         ///getting picture
         ImageView imageView = holder.imageViewSmallPoster;
 
         ///working with Picasso and download picture
-        Picasso.get().load(movie.getPosterPath()).into(imageView);
+        Picasso.get().load("https://image.tmdb.org/t/p/w500"+movie.getPosterPath()).into(imageView);
     }
+
+
 
     @Override
     public int getItemCount()
@@ -72,7 +78,7 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHol
         return movies.size();
     }
 
-    public void addMovies(List<Movie> movies)
+    public void addMovies(List<Result> movies)
     {
         this.movies.addAll(movies);
 
@@ -81,7 +87,7 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHol
     }
 
 
-    public List<Movie> getMovies()
+    public List<Result> getMovies()
     {
         return movies;
     }
@@ -94,7 +100,7 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHol
         notifyDataSetChanged();
     }
 
-    public void setMovies(List<Movie> movies)
+    public void setMovies(List<Result> movies)
     {
         this.movies = movies;
 

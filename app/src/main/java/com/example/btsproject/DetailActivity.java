@@ -4,15 +4,11 @@ package com.example.btsproject;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -25,8 +21,6 @@ import com.example.btsproject.data.MainViewModel;
 import com.example.btsproject.data.Movie;
 import com.example.btsproject.data.Review;
 import com.example.btsproject.data.Trailer;
-import com.example.btsproject.utils.JSONUtils;
-import com.example.btsproject.utils.NetworkUtils;
 import com.squareup.picasso.Picasso;
 
 import org.json.JSONObject;
@@ -57,16 +51,17 @@ public class DetailActivity extends AppCompatActivity
 
 
     ///петод для создания меню
-    @Override
+    //method for menu
+    /*@Override
     public boolean onCreateOptionsMenu(Menu menu)
     {
         MenuInflater menuInflater = getMenuInflater();
         menuInflater.inflate(R.menu.main_menu,menu);
         return super.onCreateOptionsMenu(menu);
-    }
+    }*/
 
     ///метод для возможности нажатия на элементы меню
-    @Override
+   /* @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item)
     {
         ///получаем id элемента на который нажали
@@ -85,7 +80,7 @@ public class DetailActivity extends AppCompatActivity
                 break;
         }
         return super.onOptionsItemSelected(item);
-    }
+    }*/
 
 
     @Override
@@ -109,14 +104,14 @@ public class DetailActivity extends AppCompatActivity
         }
         else
         {
-            ///закрываем активность,если ошибка
+            //close it if we got error
             finish();
         }
 
-        ///получаем наш  viewModel(который отвечает за фильм)
+        //get our viewModel(who's responsible for films)
         viewModel = ViewModelProviders.of(this).get(MainViewModel.class);
 
-        /// получаем наш фильм
+        ///get films
         movie = viewModel.getMovieById(id);
 
 
@@ -142,7 +137,7 @@ public class DetailActivity extends AppCompatActivity
             @Override
             public void onTrailerClick(String url)
             {
-                ///используем неяный Intent , чтобы запустить трейлер через youtube
+                //uses Intent for starting watch trailer in youtube
                 Intent intentToTrailer = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
                 startActivity(intentToTrailer);
             }
@@ -155,8 +150,8 @@ public class DetailActivity extends AppCompatActivity
         recyclerViewTrailers.setAdapter(trailerAdapter);
 
 
-        loadReview(movie.getId());
-        loadVideo(movie.getId());
+        /*loadReview(movie.getId());
+        loadVideo(movie.getId());*/
 
 
     }
@@ -173,7 +168,7 @@ public class DetailActivity extends AppCompatActivity
 
     }
 
-    ///метод для обработки нажатия на картинку ,для добавления фильма в избранное
+    //method for processing click at the button, for added film in favourite
     public void onClickChangeFavourite(View view)
     {
         ///значит,что фильма в базе данных нет
@@ -207,7 +202,7 @@ public class DetailActivity extends AppCompatActivity
     }
 
     ///метод для загрузки отзывов
-    private void loadReview(int filmId)
+    /*private void loadReview(int filmId)
     {
         ///получем отзывы в формате JSON
         JSONObject jsonObject = NetworkUtils.getJSONReviewForVideo(filmId);
@@ -232,5 +227,5 @@ public class DetailActivity extends AppCompatActivity
         ///устанавливаем трейлеры в адаптер
         trailerAdapter.setTrailers(trailers);
 
-    }
+    }*/
 }

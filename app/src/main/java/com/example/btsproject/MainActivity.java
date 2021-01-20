@@ -1,43 +1,39 @@
 package com.example.btsproject;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.lifecycle.LiveData;
-import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.loader.app.LoaderManager;
-import androidx.loader.content.Loader;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 
-import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.CompoundButton;
 import android.widget.ProgressBar;
 import android.widget.Switch;
 import android.widget.TextView;
-
+import android.widget.Toast;
 
 
 import com.example.btsproject.adapters.MovieAdapter;
 import com.example.btsproject.data.MainViewModel;
-import com.example.btsproject.data.Movie;
-import com.example.btsproject.utils.JSONUtils;
-import com.example.btsproject.utils.NetworkUtils;
-
-import org.json.JSONObject;
+import com.example.btsproject.model.MovieApiResponse;
+import com.example.btsproject.model.Result;
+import com.example.btsproject.service.MovieApiService;
+import com.example.btsproject.service.RetrofitInstance;
 
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.List;
 
-public class MainActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<JSONObject>
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+
+public class MainActivity extends AppCompatActivity //implements LoaderManager.LoaderCallbacks<JSONObject>
 {
     private RecyclerView recyclerViewPosters;
     private MovieAdapter adapter;
@@ -56,17 +52,21 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
 
     private ProgressBar progressBarLoading;
 
+    //retrofit test below
+    private ArrayList<Result> results = new ArrayList<>();
+    private int page_counter = 1;
+
     ///метод для создания меню
     @Override
     public boolean onCreateOptionsMenu(Menu menu)
     {
-        MenuInflater menuInflater = getMenuInflater();
-        menuInflater.inflate(R.menu.main_menu,menu);
+        /*MenuInflater menuInflater = getMenuInflater();
+        menuInflater.inflate(R.menu.main_menu,menu);*/
         return super.onCreateOptionsMenu(menu);
     }
 
     /// Method for menu element click events
-    @Override
+    /*@Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item)
     {
         /// Get clicked element id
@@ -85,7 +85,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
                 break;
         }
         return super.onOptionsItemSelected(item);
-    }
+    }*/
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -97,7 +97,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         /// Manages all media loads in app
         loaderManager = LoaderManager.getInstance(this);
 
-        recyclerViewPosters = findViewById(R.id.recyclerViewPosters);
+
         switchSort = findViewById(R.id.switchSort);
         textViewPopularity = findViewById(R.id.textViewPopularity);
         textViewTopRated = findViewById(R.id.textViewTopRated);
@@ -105,15 +105,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
 
         viewModel = ViewModelProviders.of(this).get(MainViewModel.class);
 
-        adapter = new MovieAdapter();
 
-        /// To load movies at the beginning
-        switchSort.setChecked(true);
-
-        recyclerViewPosters.setLayoutManager(new GridLayoutManager(this,2));
-
-        /// Setting adapter to recyclerViewPosters
-        recyclerViewPosters.setAdapter(adapter);
 
 
         /// Setting event listener
@@ -122,167 +114,99 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked)
             {
-                pageNumber = 1;
-                setMethodOfSort(isChecked);
+                //pageNumber = 1;
+                Toast.makeText(MainActivity.this, String.valueOf(isChecked), Toast.LENGTH_SHORT).show();
+                results.clear();
+                //setMethodOfSort(isChecked);
+                if(isChecked) {
+                    getTopRatedMovies(page_counter);
+                }
+                else {
+                    getPopularMovies(page_counter);
+                }
             }
         });
         switchSort.setChecked(false);
 
-        /// Movie item click event
-        adapter.setOnPosterClickListener(new MovieAdapter.OnPosterClickListener()
-        {
-            @Override
-            public void onPosterClick(int position)
-            {
-                /// getting movies from API
-                Movie movie = adapter.getMovies().get(position);
+        recyclerViewPosters = findViewById(R.id.recyclerViewPosters);
+        recyclerViewPosters.setLayoutManager(new GridLayoutManager(this,2));
+        adapter = new MovieAdapter();
+        adapter.setMovies(results);
+        recyclerViewPosters.setAdapter(adapter);
 
-                /// creating Intent
-                Intent intent = new Intent(MainActivity.this,DetailActivity.class);
-                intent.putExtra("id",movie.getId());
-                startActivity(intent);
+
+        adapter.setOnPosterClickListener(new MovieAdapter.OnPosterClickListener() {
+            @Override
+            public void onPosterClick(int position) {
+                Toast.makeText(MainActivity.this, ""+position, Toast.LENGTH_SHORT).show();
             }
         });
 
-        adapter.setOnReachEndListener(new MovieAdapter.OnReachEndListener()
-        {
+
+
+        recyclerViewPosters.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
-            public void onReachEnd()
-            {
-                if(!isLoading)
-                {
-                    downloadData(methodOfSort,pageNumber);
+            public void onScrollStateChanged(@NonNull RecyclerView recyclerView, int newState) {
+                if(!recyclerView.canScrollVertically(1)) {
+                    Toast.makeText(MainActivity.this, "Load next page", Toast.LENGTH_SHORT).show();
+                    getPopularMovies(++page_counter);
+                    Log.i("ttag", "Load next page");
                 }
             }
         });
 
-        LiveData<List<Movie>> moviesFromLifeData = viewModel.getMovies();
-        /// adding observer
-        moviesFromLifeData.observe(this, new Observer<List<Movie>>()
-        {
-            /// Every time when data will be changed in database we will install it inside adapter
+
+        //BELOW TESTING RETROFIT ***************
+        getPopularMovies(page_counter);
+
+
+
+        //END TESTING
+    }
+
+    //Retrofit method
+    //in next, these two method(below) will be transferred to (ViewModel) and in this (MainActivity) we will be signed to Observable variable from (ViewModel)
+    public void getPopularMovies(int page) {
+        MovieApiService movieApiService = RetrofitInstance.getService();
+        Call<MovieApiResponse> call = movieApiService.getPopularMovies(getString(R.string.api_key), page);
+        call.enqueue(new Callback<MovieApiResponse>() {
+            //if load data is success
             @Override
-            public void onChanged(List<Movie> movies)
-            {
-                /// If internet connection is not available
-                if(pageNumber == 1)
-                {
-                    adapter.setMovies(movies);
+            public void onResponse(Call<MovieApiResponse> call, Response<MovieApiResponse> response) {
+                MovieApiResponse movieApiResponse = response.body();
+                if(movieApiResponse != null && movieApiResponse.getResults() != null) {
+                    results.addAll((ArrayList<Result>) movieApiResponse.getResults());
+                    adapter.setMovies(results);
+                    //fillRecyclerView();
                 }
-
             }
-        });
-
-    }
-
-    public void onClickSetPopularity(View view)
-    {
-        setMethodOfSort(false);
-        switchSort.setChecked(false);
-    }
-
-
-    public void onClickSetTopRated(View view)
-    {
-        setMethodOfSort(true);
-        switchSort.setChecked(true);
-    }
-
-    private void setMethodOfSort(boolean isTopRated)
-    {
-
-        if(isTopRated)
-        {
-            methodOfSort = NetworkUtils.TOP_RATED;
-            textViewTopRated.setTextColor(getResources().getColor(R.color.colorAccent));
-            textViewPopularity.setTextColor(getResources().getColor(R.color.white_color));
-        }
-        else
-        {
-            methodOfSort = NetworkUtils.POPULARITY;
-            textViewPopularity.setTextColor(getResources().getColor(R.color.colorAccent));
-            textViewTopRated.setTextColor(getResources().getColor(R.color.white_color));
-        }
-        downloadData(methodOfSort,pageNumber);
-
-    }
-
-    private void downloadData(int methodOfSort, int page)
-    {
-        /// Creating URL
-        URL url = NetworkUtils.buildURL(methodOfSort,page);
-
-        /// Creating bundle
-        Bundle bundle = new Bundle();
-
-        /// Inserting data
-        bundle.putString("url",url.toString());
-
-        /// Starting loader
-        /// Method will check:
-        /// if loader exists. It will be created if not.
-        /// if loader exists it will be restarted.
-        loaderManager.restartLoader(LOADER_ID,bundle,this);
-    }
-
-    @NonNull
-    @Override
-    public Loader<JSONObject> onCreateLoader(int id, @Nullable Bundle bundle)
-    {
-        /// Creating loader
-        NetworkUtils.JSONLoader jsonLoader = new NetworkUtils.JSONLoader(this,bundle);
-
-        /// Creating event listener to loader(start of data load);
-        jsonLoader.setOnStartLoadingListener(new NetworkUtils.JSONLoader.OnStartLoadingListener() {
+            //if got an error while loading data
             @Override
-            public void onStartLoading()
-            {
-                progressBarLoading.setVisibility(View.VISIBLE);
-                isLoading = true;
+            public void onFailure(Call<MovieApiResponse> call, Throwable t) {
+
             }
         });
-        return jsonLoader;
     }
 
-    /// End of data load
-    @Override
-    public void onLoadFinished(@NonNull Loader<JSONObject> loader, JSONObject jsonObject)
-    {
-        /// Getting movies list
-        ArrayList<Movie> movies = JSONUtils.getMoviesFromJSON(jsonObject);
-
-        /// load new data if it appeared
-        if(movies != null && !movies.isEmpty())
-        {
-
-            /// if movies were successfully loaded adapter database should be cleared
-            if(pageNumber == 1)
-            {
-                /// clear previous data
-                viewModel.deleteAllMovies();
-                adapter.clear();
+    public void getTopRatedMovies(int page) {
+        MovieApiService movieApiService = RetrofitInstance.getService();
+        Call<MovieApiResponse> call = movieApiService.getTopRatedMovies(getString(R.string.api_key), page);
+        call.enqueue(new Callback<MovieApiResponse>() {
+            @Override
+            public void onResponse(Call<MovieApiResponse> call, Response<MovieApiResponse> response) {
+                MovieApiResponse movieApiResponse = response.body();
+                if(movieApiResponse != null && movieApiResponse.getResults() != null) {
+                    results.addAll((ArrayList<Result>) movieApiResponse.getResults());
+                    adapter.setMovies(results);
+                    //fillRecyclerView();
+                }
             }
 
-            for(Movie movie: movies)
-            {
-                /// insert new data
-                viewModel.insertMovie(movie);
+            @Override
+            public void onFailure(Call<MovieApiResponse> call, Throwable t) {
+
             }
-
-            adapter.addMovies(movies);
-            pageNumber++;
-            progressBarLoading.setVisibility(View.INVISIBLE);
-        }
-
-        /// Deleting loader after data load
-        loaderManager.destroyLoader(LOADER_ID);
-
-        /// is data load completed
-        isLoading = false;
+        });
     }
 
-    @Override
-    public void onLoaderReset(@NonNull Loader<JSONObject> loader) {
-
-    }
 }

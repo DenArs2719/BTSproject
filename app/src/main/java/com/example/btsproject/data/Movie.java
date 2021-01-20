@@ -4,6 +4,7 @@ import androidx.room.Entity;
 import androidx.room.Ignore;
 import androidx.room.PrimaryKey;
 
+///НЕ ИСПОЛЬЗУЕМ
 @Entity(tableName = "movies")
 public class Movie
 {
