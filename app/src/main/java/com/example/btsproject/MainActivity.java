@@ -157,7 +157,8 @@ public class MainActivity extends AppCompatActivity //implements LoaderManager.L
 
 
         //BELOW TESTING RETROFIT ***************
-        getPopularMovies(page_counter);
+        //getPopularMovies(page_counter);
+        getMovieByTitle(page_counter, "Matrix");
 
 
 
@@ -199,6 +200,26 @@ public class MainActivity extends AppCompatActivity //implements LoaderManager.L
                     results.addAll((ArrayList<Result>) movieApiResponse.getResults());
                     adapter.setMovies(results);
                     //fillRecyclerView();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<MovieApiResponse> call, Throwable t) {
+
+            }
+        });
+    }
+
+    public void getMovieByTitle(long page, String title) {
+        MovieApiService movieApiResponse = RetrofitInstance.getService();
+        Call<MovieApiResponse> call = movieApiResponse.searchMovieByTitle(getString(R.string.api_key), title, page);
+        call.enqueue(new Callback<MovieApiResponse>() {
+            @Override
+            public void onResponse(Call<MovieApiResponse> call, Response<MovieApiResponse> response) {
+                MovieApiResponse movieApiResponse = response.body();
+                if(movieApiResponse != null && movieApiResponse.getResults() != null) {
+                    results.addAll((ArrayList<Result>) movieApiResponse.getResults());
+                    adapter.setMovies(results);
                 }
             }
 

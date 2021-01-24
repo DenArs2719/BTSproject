@@ -18,7 +18,12 @@ public interface MovieApiService {
             @Query("api_key") String apiKey,
             @Query("page") long page);
 
-    //TEST
+    @GET("search/movie")
+    Call<MovieApiResponse> searchMovieByTitle(
+            @Query("api_key") String apiKey,
+            @Query("query") String query,
+            @Query("page") long page
+    );
 
 
 }
