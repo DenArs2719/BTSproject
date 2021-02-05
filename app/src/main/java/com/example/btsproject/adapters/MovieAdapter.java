@@ -5,10 +5,12 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.btsproject.MainActivity;
 import com.example.btsproject.R;
 import com.example.btsproject.data.Movie;
 import com.example.btsproject.model.Result;
@@ -68,6 +70,7 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHol
 
         ///working with Picasso and download picture
         Picasso.get().load("https://image.tmdb.org/t/p/w500"+movie.getPosterPath()).into(imageView);
+        Log.i("ttag", movie.getPosterPath()+" ");
     }
 
 

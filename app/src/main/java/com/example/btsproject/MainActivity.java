@@ -11,7 +11,6 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
-import android.view.View;
 import android.widget.CompoundButton;
 import android.widget.ProgressBar;
 import android.widget.Switch;
@@ -21,13 +20,18 @@ import android.widget.Toast;
 
 import com.example.btsproject.adapters.MovieAdapter;
 import com.example.btsproject.data.MainViewModel;
+import com.example.btsproject.model.Cast;
+import com.example.btsproject.model.Crew;
+import com.example.btsproject.model.Example;
 import com.example.btsproject.model.MovieApiResponse;
 import com.example.btsproject.model.Result;
+import com.example.btsproject.model.personByName.ExampleName;
+import com.example.btsproject.model.personByName.KnownFor;
 import com.example.btsproject.service.MovieApiService;
 import com.example.btsproject.service.RetrofitInstance;
 
-import java.net.URL;
 import java.util.ArrayList;
+import java.util.List;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -150,7 +154,7 @@ public class MainActivity extends AppCompatActivity //implements LoaderManager.L
                 if(!recyclerView.canScrollVertically(1)) {
                     Toast.makeText(MainActivity.this, "Load next page", Toast.LENGTH_SHORT).show();
                     getPopularMovies(++page_counter);
-                    Log.i("ttag", "Load next page");
+                    //Log.i("ttag", "Load next page");
                 }
             }
         });
@@ -158,12 +162,80 @@ public class MainActivity extends AppCompatActivity //implements LoaderManager.L
 
         //BELOW TESTING RETROFIT ***************
         //getPopularMovies(page_counter);
-        getMovieByTitle(page_counter, "Matrix");
+        //getMovieByTitle(page_counter, "Matrix");
 
+        //getMovieById(543);
+        //Log.i("ttag", "test");
 
+        //END TESTING  1146
+        //getMovieByPersonId(1158);
 
-        //END TESTING
+        // *****************************ПОИСК ФИЛЬМОВ В КОТОРІХ СНИМАЛСЯ АКТЕР
+        getMovieByPersonName("Al Pacino");
     }
+
+    public void getMovieByPersonId(int person_id) {
+        MovieApiService movieApiService = RetrofitInstance.getService();
+        Call<Example> call = movieApiService.getMovieByPersonId(person_id, getString(R.string.api_key));
+        call.enqueue(new Callback<Example>() {
+            @Override
+            public void onResponse(Call<Example> call, Response<Example> response) {
+                /*List<Cast>  list =  response.body().getCast();
+                for(Cast crew : list) {
+                    Log.i("ttag", crew.getBackdropPath()+"");
+                    if(crew.getBackdropPath() != null) {
+                        Result res = new Result();
+                        res.setPosterPath(crew.getPosterPath());
+                        results.add(res);
+                    }
+                }*/
+                //results.addAll((ArrayList<Result>) movieApiResponse.getResults());
+                    //Log.i("ttag", movieApiResponse.getResults().get(0).getBackdropPath());
+                    results.addAll((ArrayList<Result>) response.body().getCrew());
+                    adapter.setMovies(results);
+
+            }
+
+            @Override
+            public void onFailure(Call<Example> call, Throwable t) {
+
+            }
+        });
+    }
+    public void getMovieByPersonName(String name) {
+        MovieApiService movieApiService = RetrofitInstance.getService();
+        Call<MovieApiResponse> call = movieApiService.getMovieByPersonName(getString(R.string.api_key), name);
+        call.enqueue(new Callback<MovieApiResponse>() {
+            @Override
+            public void onResponse(Call<MovieApiResponse> call, Response<MovieApiResponse> response) {
+                //Log.i("tag", response.body().getResults().get(0).getId().toString());
+                getMovieByPersonId(response.body().getResults().get(0).getId());
+
+            }
+
+            @Override
+            public void onFailure(Call<MovieApiResponse> call, Throwable t) {
+
+            }
+        });
+    }
+
+    public void getMovieById(int key) {
+        MovieApiService movieApiService = RetrofitInstance.getService();
+        Call<Result> call = movieApiService.getMovieById(key, getString(R.string.api_key));
+        call.enqueue(new Callback<Result>() {
+            @Override
+            public void onResponse(Call<Result> call, Response<Result> response) {
+                //Toast.makeText(getApplicationContext(), response.body().getTitle()+" "+response.body().getOriginalLanguage(), Toast.LENGTH_SHORT).show();
+            }
+
+            @Override
+            public void onFailure(Call<Result> call, Throwable t) {
+
+            }
+        });
+    }
+
 
     //Retrofit method
     //in next, these two method(below) will be transferred to (ViewModel) and in this (MainActivity) we will be signed to Observable variable from (ViewModel)
@@ -176,6 +248,7 @@ public class MainActivity extends AppCompatActivity //implements LoaderManager.L
             public void onResponse(Call<MovieApiResponse> call, Response<MovieApiResponse> response) {
                 MovieApiResponse movieApiResponse = response.body();
                 if(movieApiResponse != null && movieApiResponse.getResults() != null) {
+                    //Log.i("ttag", movieApiResponse.getResults().get(0).getBackdropPath());
                     results.addAll((ArrayList<Result>) movieApiResponse.getResults());
                     adapter.setMovies(results);
                     //fillRecyclerView();
