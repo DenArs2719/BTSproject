@@ -1,58 +1,77 @@
 package com.example.btsproject.model;
 
-import java.util.ArrayList;
-import java.util.List;
         import android.os.Parcel;
         import android.os.Parcelable;
-        import android.os.Parcelable.Creator;
-        import com.google.gson.annotations.Expose;
-        import com.google.gson.annotations.SerializedName;
 
+import androidx.room.Entity;
+        import androidx.room.Ignore;
+        import androidx.room.PrimaryKey;
+
+import com.google.gson.annotations.Expose;
+import com.google.gson.annotations.SerializedName;
+
+@Entity(tableName = "resultTable")
 public class Result implements Parcelable
 {
+    @PrimaryKey(autoGenerate = true)
+    private int uniqueId;
 
     @SerializedName("adult")
     @Expose
     private Boolean adult;
+
     @SerializedName("backdrop_path")
     @Expose
     private String backdropPath;
-    @SerializedName("genre_ids")
+
+   /* @SerializedName("genre_ids")
     @Expose
-    private List<Integer> genreIds = new ArrayList<>();
+    private List<Integer> genreIds = new ArrayList<>();*/
+
     @SerializedName("id")
     @Expose
     private Integer id;
+
     @SerializedName("original_language")
     @Expose
     private String originalLanguage;
+
     @SerializedName("original_title")
     @Expose
     private String originalTitle;
+
     @SerializedName("overview")
     @Expose
     private String overview;
+
     @SerializedName("popularity")
     @Expose
     private Double popularity;
+
     @SerializedName("poster_path")
     @Expose
     private String posterPath;
+
     @SerializedName("release_date")
     @Expose
     private String releaseDate;
+
     @SerializedName("title")
     @Expose
     private String title;
+
     @SerializedName("video")
     @Expose
     private Boolean video;
+
     @SerializedName("vote_average")
     @Expose
     private Double voteAverage;
+
     @SerializedName("vote_count")
     @Expose
     private Integer voteCount;
+
     public final static Parcelable.Creator<Result> CREATOR = new Creator<Result>() {
 
 
@@ -67,13 +86,13 @@ public class Result implements Parcelable
             return (new Result[size]);
         }
 
-    }
-            ;
+    };
 
-    protected Result(Parcel in) {
+    protected Result(Parcel in)
+    {
         this.adult = ((Boolean) in.readValue((Boolean.class.getClassLoader())));
         this.backdropPath = ((String) in.readValue((String.class.getClassLoader())));
-        in.readList(this.genreIds, (java.lang.Integer.class.getClassLoader()));
+        //in.readList(this.genreIds, (java.lang.Integer.class.getClassLoader()));
         this.id = ((Integer) in.readValue((Integer.class.getClassLoader())));
         this.originalLanguage = ((String) in.readValue((String.class.getClassLoader())));
         this.originalTitle = ((String) in.readValue((String.class.getClassLoader())));
@@ -87,7 +106,41 @@ public class Result implements Parcelable
         this.voteCount = ((Integer) in.readValue((Integer.class.getClassLoader())));
     }
 
-    public Result() {
+    public Result(int uniqueId, Boolean adult, String backdropPath, Integer id, String originalLanguage, String originalTitle, String overview, Double popularity, String posterPath, String releaseDate, String title, Boolean video, Double voteAverage, Integer voteCount) {
+        this.uniqueId = uniqueId;
+        this.adult = adult;
+        this.backdropPath = backdropPath;
+        this.id = id;
+        this.originalLanguage = originalLanguage;
+        this.originalTitle = originalTitle;
+        this.overview = overview;
+        this.popularity = popularity;
+        this.posterPath = posterPath;
+        this.releaseDate = releaseDate;
+        this.title = title;
+        this.video = video;
+        this.voteAverage = voteAverage;
+        this.voteCount = voteCount;
+    }
+
+    public Result()
+    {}
+
+    @Ignore
+    public Result(Boolean adult, String backdropPath, Integer id, String originalLanguage, String originalTitle, String overview, Double popularity, String posterPath, String releaseDate, String title, Boolean video, Double voteAverage, Integer voteCount) {
+        this.adult = adult;
+        this.backdropPath = backdropPath;
+        this.id = id;
+        this.originalLanguage = originalLanguage;
+        this.originalTitle = originalTitle;
+        this.overview = overview;
+        this.popularity = popularity;
+        this.posterPath = posterPath;
+        this.releaseDate = releaseDate;
+        this.title = title;
+        this.video = video;
+        this.voteAverage = voteAverage;
+        this.voteCount = voteCount;
     }
 
     public Boolean getAdult() {
@@ -106,13 +159,13 @@ public class Result implements Parcelable
         this.backdropPath = backdropPath;
     }
 
-    public List<Integer> getGenreIds() {
+    /*public List<Integer> getGenreIds() {
         return genreIds;
     }
 
     public void setGenreIds(List<Integer> genreIds) {
         this.genreIds = genreIds;
-    }
+    }*/
 
     public Integer getId() {
         return id;
@@ -202,10 +255,18 @@ public class Result implements Parcelable
         this.voteCount = voteCount;
     }
 
+    public int getUniqueId() {
+        return uniqueId;
+    }
+
+    public void setUniqueId(int uniqueId) {
+        this.uniqueId = uniqueId;
+    }
+
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeValue(adult);
         dest.writeValue(backdropPath);
-        dest.writeList(genreIds);
+        //dest.writeList(genreIds);
         dest.writeValue(id);
         dest.writeValue(originalLanguage);
         dest.writeValue(originalTitle);

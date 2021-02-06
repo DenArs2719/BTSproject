@@ -7,25 +7,27 @@ import androidx.room.Delete;
 import androidx.room.Insert;
 import androidx.room.Query;
 
+import com.example.btsproject.model.Result;
+
 import java.util.List;
 
 @Dao
 public interface MovieDao
 {
-    @Query("SELECT * FROM movies")
-    LiveData<List<Movie>> getAllMovies();
+    @Query("SELECT * FROM resultTable")
+    LiveData<List<Result>> getAllMovies();
 
-    @Query("SELECT * FROM movies WHERE id == :movieId ")
-    Movie getMovieById(int movieId);
+    @Query("SELECT * FROM resultTable WHERE id == :movieId")
+    Result getMovieById(int movieId);
 
-    @Query("DELETE FROM movies")
+    @Query("DELETE FROM resultTable")
     void deleteAllMovies();
 
     @Insert
-    void insertMovie(Movie movie);
+    void insertMovie(Result movie);
 
     @Delete
-    void deleteMovie(Movie movie);
+    void deleteMovie(Result movie);
 
     ///работа с избронными фильмами
     @Query("SELECT * FROM favourite_movies")

@@ -22,7 +22,8 @@ public class MovieApiResponse implements Parcelable
     @SerializedName("total_results")
     @Expose
     private Integer totalResults;
-    public final static Parcelable.Creator<MovieApiResponse> CREATOR = new Creator<MovieApiResponse>() {
+    public final static Parcelable.Creator<MovieApiResponse> CREATOR = new Creator<MovieApiResponse>()
+    {
 
 
         @SuppressWarnings({

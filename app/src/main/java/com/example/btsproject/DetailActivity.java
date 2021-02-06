@@ -4,11 +4,16 @@ package com.example.btsproject;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -21,6 +26,7 @@ import com.example.btsproject.data.MainViewModel;
 import com.example.btsproject.data.Movie;
 import com.example.btsproject.data.Review;
 import com.example.btsproject.data.Trailer;
+import com.example.btsproject.model.Result;
 import com.squareup.picasso.Picasso;
 
 import org.json.JSONObject;
@@ -35,7 +41,7 @@ public class DetailActivity extends AppCompatActivity
     private TextView textViewRating;
     private TextView textViewReleaseDate;
     private TextView textViewOverview;
-    private Movie movie;
+    private Result movie;
     private ImageView imageViewAddToFavourite;
 
     private RecyclerView recyclerViewReviews;
@@ -49,19 +55,18 @@ public class DetailActivity extends AppCompatActivity
     private MainViewModel viewModel;
     private FavouriteMovie favouriteMovie;
 
-
+/*
     ///петод для создания меню
-    //method for menu
-    /*@Override
+    @Override
     public boolean onCreateOptionsMenu(Menu menu)
     {
         MenuInflater menuInflater = getMenuInflater();
         menuInflater.inflate(R.menu.main_menu,menu);
         return super.onCreateOptionsMenu(menu);
-    }*/
+    }
 
     ///метод для возможности нажатия на элементы меню
-   /* @Override
+    @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item)
     {
         ///получаем id элемента на который нажали
@@ -80,8 +85,8 @@ public class DetailActivity extends AppCompatActivity
                 break;
         }
         return super.onOptionsItemSelected(item);
-    }*/
-
+    }
+*/
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -98,22 +103,27 @@ public class DetailActivity extends AppCompatActivity
 
         ///получаем наши данные
         Intent intent = getIntent();
+
         if(intent != null && intent.hasExtra("id"))
         {
             id = intent.getIntExtra("id",-1);
         }
         else
         {
-            //close it if we got error
+            ///закрываем активность,если ошибка
             finish();
         }
+        Log.i("intent",String.valueOf(id));
 
-        //get our viewModel(who's responsible for films)
+        ///получаем наш  viewModel(который отвечает за фильм)
         viewModel = ViewModelProviders.of(this).get(MainViewModel.class);
 
-        ///get films
+        /// получаем наш фильм
+        //movie = viewModel.getMovieById(id,getString(R.string.api_key));
         movie = viewModel.getMovieById(id);
 
+
+        createMovieDetails(movie);
 
         if(movie != null)
         {
@@ -125,9 +135,10 @@ public class DetailActivity extends AppCompatActivity
             createMovieDetails(movie);
         }
 
+
         setFavourite();
 
-        recyclerViewReviews = findViewById(R.id.recyclerViewReviews);
+        /*recyclerViewReviews = findViewById(R.id.recyclerViewReviews);
         recyclerViewTrailers = findViewById(R.id.recyclerViewTrailers);
 
         reviewAdapter = new ReviewAdapter();
@@ -137,29 +148,24 @@ public class DetailActivity extends AppCompatActivity
             @Override
             public void onTrailerClick(String url)
             {
-                //uses Intent for starting watch trailer in youtube
+                ///используем неяный Intent , чтобы запустить трейлер через youtube
                 Intent intentToTrailer = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
                 startActivity(intentToTrailer);
             }
-        });
+        });*/
 
-        recyclerViewReviews.setLayoutManager(new LinearLayoutManager(this));
-        recyclerViewTrailers.setLayoutManager(new LinearLayoutManager(this));
+        //recyclerViewReviews.setLayoutManager(new LinearLayoutManager(this));
+        //recyclerViewTrailers.setLayoutManager(new LinearLayoutManager(this));
 
-        recyclerViewReviews.setAdapter(reviewAdapter);
-        recyclerViewTrailers.setAdapter(trailerAdapter);
-
-
-        /*loadReview(movie.getId());
-        loadVideo(movie.getId());*/
-
+        //recyclerViewReviews.setAdapter(reviewAdapter);
+        //recyclerViewTrailers.setAdapter(trailerAdapter);
 
     }
 
-    private void createMovieDetails(Movie movie)
+    private void createMovieDetails(Result movie)
     {
         ///устанавливаем значения
-        Picasso.get().load(movie.getBigPosterPath()).into(imageViewBigPoster);
+        Picasso.get().load("https://image.tmdb.org/t/p/w500"+movie.getPosterPath()).into(imageViewBigPoster);
         textViewTitle.setText(movie.getTitle());
         textViewOriginalTitle.setText(movie.getOriginalTitle());
         textViewOverview.setText(movie.getOverview());
@@ -168,7 +174,7 @@ public class DetailActivity extends AppCompatActivity
 
     }
 
-    //method for processing click at the button, for added film in favourite
+    ///метод для обработки нажатия на картинку ,для добавления фильма в избранное
     public void onClickChangeFavourite(View view)
     {
         ///значит,что фильма в базе данных нет
@@ -201,31 +207,4 @@ public class DetailActivity extends AppCompatActivity
         }
     }
 
-    ///метод для загрузки отзывов
-    /*private void loadReview(int filmId)
-    {
-        ///получем отзывы в формате JSON
-        JSONObject jsonObject = NetworkUtils.getJSONReviewForVideo(filmId);
-
-        ///получем список отзывов
-        ArrayList<Review> reviews = JSONUtils.getReviewInfoFromJSON(jsonObject);
-
-        ///устанавливаем отзывы в адаптере
-        reviewAdapter.setReviews(reviews);
-
-    }
-
-    ///метод для загрузки трейлеров
-    private void loadVideo(int filmId)
-    {
-        ///получем  трейлеры
-        JSONObject jsonObject = NetworkUtils.getJSONForVideo(filmId);
-
-        ///получем список трейлеров
-        ArrayList<Trailer>  trailers = JSONUtils.getTrailerFromJSON(jsonObject);
-
-        ///устанавливаем трейлеры в адаптер
-        trailerAdapter.setTrailers(trailers);
-
-    }*/
 }

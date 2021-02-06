@@ -6,11 +6,13 @@ import androidx.room.Database;
 import androidx.room.Room;
 import androidx.room.RoomDatabase;
 
-@Database(entities = {Movie.class,FavouriteMovie.class},version = 3,exportSchema = false)
+import com.example.btsproject.model.Result;
+
+@Database(entities = {Result.class,FavouriteMovie.class},version = 10,exportSchema = false)
 public abstract class MovieDataBase extends RoomDatabase
 {
     private static MovieDataBase dataBase;
-    private static final String DB_NAME = "movies.db";
+    private static final String DB_NAME = "resultTables.db";
     private static final Object LOCK = new Object();
 
     ///use SINGLETON

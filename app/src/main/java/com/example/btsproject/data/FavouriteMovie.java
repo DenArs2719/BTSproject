@@ -4,18 +4,19 @@ package com.example.btsproject.data;
 import androidx.room.Entity;
 import androidx.room.Ignore;
 
+import com.example.btsproject.model.Result;
+
 @Entity(tableName = "favourite_movies")
-public class FavouriteMovie extends Movie
+public class FavouriteMovie extends Result
 {
-    public FavouriteMovie(int uniqueId,int id, int voteCount, String title, String originalTitle, String overview, String posterPath, String bigPosterPath, String backDropPath, double voteAverage, String releaseDate)
-    {
-        super(uniqueId,id, voteCount, title, originalTitle, overview, posterPath, bigPosterPath, backDropPath, voteAverage, releaseDate);
+    public FavouriteMovie(Boolean adult, String backdropPath, Integer id, String originalLanguage, String originalTitle, String overview, Double popularity, String posterPath, String releaseDate, String title, Boolean video, Double voteAverage, Integer voteCount) {
+        super(adult,backdropPath,id,originalLanguage,originalTitle,overview,popularity,posterPath,releaseDate,title,video,voteAverage,voteCount);
     }
 
     @Ignore
-    public FavouriteMovie(Movie movie)
+    public FavouriteMovie(Result movie)
     {
-        super(movie.getUniqueId(),movie.getId(),movie.getVoteCount(),movie.getTitle(),movie.getOriginalTitle(),movie.getOverview(),movie.getPosterPath(),movie.getBigPosterPath(),movie.getBackDropPath(),movie.getVoteAverage(),movie.getReleaseDate());
+        super(movie.getAdult(),movie.getBackdropPath(),movie.getId(),movie.getOriginalLanguage(),movie.getOriginalTitle(),movie.getOverview(),movie.getPopularity(),movie.getPosterPath(),movie.getReleaseDate(),movie.getTitle(),movie.getVideo(),movie.getVoteAverage(),movie.getVoteCount());
     }
 
 }

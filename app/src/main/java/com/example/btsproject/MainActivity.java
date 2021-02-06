@@ -8,6 +8,7 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
@@ -20,18 +21,14 @@ import android.widget.Toast;
 
 import com.example.btsproject.adapters.MovieAdapter;
 import com.example.btsproject.data.MainViewModel;
-import com.example.btsproject.model.Cast;
-import com.example.btsproject.model.Crew;
 import com.example.btsproject.model.Example;
 import com.example.btsproject.model.MovieApiResponse;
 import com.example.btsproject.model.Result;
-import com.example.btsproject.model.personByName.ExampleName;
-import com.example.btsproject.model.personByName.KnownFor;
 import com.example.btsproject.service.MovieApiService;
 import com.example.btsproject.service.RetrofitInstance;
 
 import java.util.ArrayList;
-import java.util.List;
+
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -142,7 +139,16 @@ public class MainActivity extends AppCompatActivity //implements LoaderManager.L
         adapter.setOnPosterClickListener(new MovieAdapter.OnPosterClickListener() {
             @Override
             public void onPosterClick(int position) {
+                ///получаем фильм на который нажали
+                Result movie = adapter.getMovies().get(position);
                 Toast.makeText(MainActivity.this, ""+position, Toast.LENGTH_SHORT).show();
+
+                Intent intent = new Intent(MainActivity.this,DetailActivity.class);
+
+                intent.putExtra("id",movie.getId());
+
+                startActivity(intent);
+
             }
         });
 
@@ -154,7 +160,6 @@ public class MainActivity extends AppCompatActivity //implements LoaderManager.L
                 if(!recyclerView.canScrollVertically(1)) {
                     Toast.makeText(MainActivity.this, "Load next page", Toast.LENGTH_SHORT).show();
                     getPopularMovies(++page_counter);
-                    //Log.i("ttag", "Load next page");
                 }
             }
         });
@@ -194,6 +199,10 @@ public class MainActivity extends AppCompatActivity //implements LoaderManager.L
                     results.addAll((ArrayList<Result>) response.body().getCrew());
                     adapter.setMovies(results);
 
+                    for(Result movie: results)
+                    {
+                        viewModel.insertMovie(movie);
+                    }
             }
 
             @Override
@@ -207,8 +216,8 @@ public class MainActivity extends AppCompatActivity //implements LoaderManager.L
         Call<MovieApiResponse> call = movieApiService.getMovieByPersonName(getString(R.string.api_key), name);
         call.enqueue(new Callback<MovieApiResponse>() {
             @Override
-            public void onResponse(Call<MovieApiResponse> call, Response<MovieApiResponse> response) {
-                //Log.i("tag", response.body().getResults().get(0).getId().toString());
+            public void onResponse(Call<MovieApiResponse> call, Response<MovieApiResponse> response)
+            {
                 getMovieByPersonId(response.body().getResults().get(0).getId());
 
             }
@@ -224,6 +233,7 @@ public class MainActivity extends AppCompatActivity //implements LoaderManager.L
         MovieApiService movieApiService = RetrofitInstance.getService();
         Call<Result> call = movieApiService.getMovieById(key, getString(R.string.api_key));
         call.enqueue(new Callback<Result>() {
+
             @Override
             public void onResponse(Call<Result> call, Response<Result> response) {
                 //Toast.makeText(getApplicationContext(), response.body().getTitle()+" "+response.body().getOriginalLanguage(), Toast.LENGTH_SHORT).show();
@@ -252,6 +262,10 @@ public class MainActivity extends AppCompatActivity //implements LoaderManager.L
                     results.addAll((ArrayList<Result>) movieApiResponse.getResults());
                     adapter.setMovies(results);
                     //fillRecyclerView();
+                    for(Result movie : results)
+                    {
+                        viewModel.insertMovie(movie);
+                    }
                 }
             }
             //if got an error while loading data
@@ -273,6 +287,11 @@ public class MainActivity extends AppCompatActivity //implements LoaderManager.L
                     results.addAll((ArrayList<Result>) movieApiResponse.getResults());
                     adapter.setMovies(results);
                     //fillRecyclerView();
+                    for(Result movie : results)
+                    {
+                        viewModel.insertMovie(movie);
+                    }
+
                 }
             }
 

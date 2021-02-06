@@ -3,7 +3,6 @@ package com.example.btsproject.service;
 import com.example.btsproject.model.Example;
 import com.example.btsproject.model.MovieApiResponse;
 import com.example.btsproject.model.Result;
-import com.example.btsproject.model.personByName.ExampleName;
 
 import retrofit2.Call;
 import retrofit2.http.GET;
