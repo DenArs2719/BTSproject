@@ -8,7 +8,7 @@ import androidx.room.RoomDatabase;
 
 import com.example.btsproject.model.Result;
 
-@Database(entities = {Result.class,FavouriteMovie.class},version = 10,exportSchema = false)
+@Database(entities = {Result.class,FavouriteMovie.class},version = 11,exportSchema = false)
 public abstract class MovieDataBase extends RoomDatabase
 {
     private static MovieDataBase dataBase;

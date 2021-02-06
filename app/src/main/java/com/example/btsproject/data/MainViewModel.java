@@ -36,7 +36,7 @@ public class MainViewModel extends AndroidViewModel
 
         ///method automatically will work in other thread
         movies = dataBase.movieDao().getAllMovies();
-        //favouriteMovies = dataBase.movieDao().getAllMoviesFromFavourites();
+        favouriteMovies = dataBase.movieDao().getAllMoviesFromFavourites();
     }
 
 

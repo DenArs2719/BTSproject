@@ -55,7 +55,7 @@ public class DetailActivity extends AppCompatActivity
     private MainViewModel viewModel;
     private FavouriteMovie favouriteMovie;
 
-/*
+
     ///петод для создания меню
     @Override
     public boolean onCreateOptionsMenu(Menu menu)
@@ -86,7 +86,6 @@ public class DetailActivity extends AppCompatActivity
         }
         return super.onOptionsItemSelected(item);
     }
-*/
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -122,8 +121,6 @@ public class DetailActivity extends AppCompatActivity
         //movie = viewModel.getMovieById(id,getString(R.string.api_key));
         movie = viewModel.getMovieById(id);
 
-
-        createMovieDetails(movie);
 
         if(movie != null)
         {

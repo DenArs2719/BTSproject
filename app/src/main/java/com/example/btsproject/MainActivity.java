@@ -12,6 +12,8 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.widget.CompoundButton;
 import android.widget.ProgressBar;
 import android.widget.Switch;
@@ -61,13 +63,13 @@ public class MainActivity extends AppCompatActivity //implements LoaderManager.L
     @Override
     public boolean onCreateOptionsMenu(Menu menu)
     {
-        /*MenuInflater menuInflater = getMenuInflater();
-        menuInflater.inflate(R.menu.main_menu,menu);*/
+        MenuInflater menuInflater = getMenuInflater();
+        menuInflater.inflate(R.menu.main_menu,menu);
         return super.onCreateOptionsMenu(menu);
     }
 
     /// Method for menu element click events
-    /*@Override
+    @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item)
     {
         /// Get clicked element id
@@ -86,7 +88,7 @@ public class MainActivity extends AppCompatActivity //implements LoaderManager.L
                 break;
         }
         return super.onOptionsItemSelected(item);
-    }*/
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
