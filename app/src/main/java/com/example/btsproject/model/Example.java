@@ -9,7 +9,7 @@ import com.google.gson.annotations.SerializedName;
 
 public class Example implements Parcelable
 {
-
+//аааааааааа
     @SerializedName("cast")
     @Expose
     private List<Cast> cast = new ArrayList<>();
