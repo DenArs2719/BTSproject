@@ -27,6 +27,8 @@ import com.example.btsproject.data.Movie;
 import com.example.btsproject.data.Review;
 import com.example.btsproject.data.Trailer;
 import com.example.btsproject.model.Result;
+import com.example.btsproject.utils.JSONUtils;
+import com.example.btsproject.utils.NetworkUtils;
 import com.squareup.picasso.Picasso;
 
 import org.json.JSONObject;
@@ -135,7 +137,7 @@ public class DetailActivity extends AppCompatActivity
 
         setFavourite();
 
-        /*recyclerViewReviews = findViewById(R.id.recyclerViewReviews);
+        recyclerViewReviews = findViewById(R.id.recyclerViewReviews);
         recyclerViewTrailers = findViewById(R.id.recyclerViewTrailers);
 
         reviewAdapter = new ReviewAdapter();
@@ -149,13 +151,17 @@ public class DetailActivity extends AppCompatActivity
                 Intent intentToTrailer = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
                 startActivity(intentToTrailer);
             }
-        });*/
+        });
 
-        //recyclerViewReviews.setLayoutManager(new LinearLayoutManager(this));
-        //recyclerViewTrailers.setLayoutManager(new LinearLayoutManager(this));
+        recyclerViewReviews.setLayoutManager(new LinearLayoutManager(this));
+        recyclerViewTrailers.setLayoutManager(new LinearLayoutManager(this));
 
-        //recyclerViewReviews.setAdapter(reviewAdapter);
-        //recyclerViewTrailers.setAdapter(trailerAdapter);
+        recyclerViewReviews.setAdapter(reviewAdapter);
+        recyclerViewTrailers.setAdapter(trailerAdapter);
+
+        loadReview(movie.getId());
+        loadVideo(movie.getId());
+
 
     }
 
@@ -202,6 +208,34 @@ public class DetailActivity extends AppCompatActivity
         {
             imageViewAddToFavourite.setImageResource(R.drawable.favourite_remove);
         }
+    }
+
+    ///метод для загрузки отзывов
+    private void loadReview(int filmId)
+    {
+        ///получем отзывы в формате JSON
+        JSONObject jsonObject = NetworkUtils.getJSONReviewForVideo(filmId);
+
+        ///получем список отзывов
+        ArrayList<Review> reviews = JSONUtils.getReviewInfoFromJSON(jsonObject);
+
+        ///устанавливаем отзывы в адаптере
+        reviewAdapter.setReviews(reviews);
+
+    }
+
+    ///метод для загрузки трейлеров
+    private void loadVideo(int filmId)
+    {
+        ///получем  трейлеры
+        JSONObject jsonObject = NetworkUtils.getJSONForVideo(filmId);
+
+        ///получем список трейлеров
+        ArrayList<Trailer>  trailers = JSONUtils.getTrailerFromJSON(jsonObject);
+
+        ///устанавливаем трейлеры в адаптер
+        trailerAdapter.setTrailers(trailers);
+
     }
 
 }

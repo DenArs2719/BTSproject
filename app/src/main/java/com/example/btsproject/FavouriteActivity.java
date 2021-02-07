@@ -57,6 +57,11 @@ public class FavouriteActivity extends AppCompatActivity
                     Intent intentToFavourite = new Intent(this,FavouriteActivity.class);
                     startActivity(intentToFavourite);
                     break;
+                case R.id.itemSearch:
+                    Intent intentToSearch = new Intent(this,SearchActivity.class);
+                    startActivity(intentToSearch);
+                    break;
+
             }
             return super.onOptionsItemSelected(item);
         }

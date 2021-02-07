@@ -62,9 +62,8 @@ public class Cast implements Parcelable
     @SerializedName("order")
     @Expose
     private Integer order;
-    public final static Parcelable.Creator<Cast> CREATOR = new Creator<Cast>() {
-
-
+    public final static Parcelable.Creator<Cast> CREATOR = new Creator<Cast>()
+    {
         @SuppressWarnings({
                 "unchecked"
         })
@@ -79,7 +78,8 @@ public class Cast implements Parcelable
     }
             ;
 
-    protected Cast(Parcel in) {
+    protected Cast(Parcel in)
+    {
         in.readList(this.genreIds, (java.lang.Integer.class.getClassLoader()));
         this.originalLanguage = ((String) in.readValue((String.class.getClassLoader())));
         this.originalTitle = ((String) in.readValue((String.class.getClassLoader())));

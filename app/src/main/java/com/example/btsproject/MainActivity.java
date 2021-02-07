@@ -10,10 +10,10 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.CompoundButton;
 import android.widget.ProgressBar;
 import android.widget.Switch;
@@ -59,7 +59,7 @@ public class MainActivity extends AppCompatActivity //implements LoaderManager.L
     private ArrayList<Result> results = new ArrayList<>();
     private int page_counter = 1;
 
-    ///метод для создания меню
+    ///method for creating menu
     @Override
     public boolean onCreateOptionsMenu(Menu menu)
     {
@@ -86,6 +86,12 @@ public class MainActivity extends AppCompatActivity //implements LoaderManager.L
                 Intent intentToFavourite = new Intent(this,FavouriteActivity.class);
                 startActivity(intentToFavourite);
                 break;
+
+            case R.id.itemSearch:
+                Intent intentToSearch = new Intent(this,SearchActivity.class);
+                startActivity(intentToSearch);
+                break;
+
         }
         return super.onOptionsItemSelected(item);
     }
@@ -107,8 +113,6 @@ public class MainActivity extends AppCompatActivity //implements LoaderManager.L
         progressBarLoading = findViewById(R.id.progressBarLoading);
 
         viewModel = ViewModelProviders.of(this).get(MainViewModel.class);
-
-
 
 
         /// Setting event listener
@@ -166,87 +170,11 @@ public class MainActivity extends AppCompatActivity //implements LoaderManager.L
             }
         });
 
+        getPopularMovies(++page_counter);
 
-        //BELOW TESTING RETROFIT ***************
-        //getPopularMovies(page_counter);
-        //getMovieByTitle(page_counter, "Matrix");
-
-        //getMovieById(543);
-        //Log.i("ttag", "test");
-
-        //END TESTING  1146
-        //getMovieByPersonId(1158);
-
-        // *****************************ПОИСК ФИЛЬМОВ В КОТОРІХ СНИМАЛСЯ АКТЕР
-        getMovieByPersonName("Al Pacino");
     }
 
-    public void getMovieByPersonId(int person_id) {
-        MovieApiService movieApiService = RetrofitInstance.getService();
-        Call<Example> call = movieApiService.getMovieByPersonId(person_id, getString(R.string.api_key));
-        call.enqueue(new Callback<Example>() {
-            @Override
-            public void onResponse(Call<Example> call, Response<Example> response) {
-                /*List<Cast>  list =  response.body().getCast();
-                for(Cast crew : list) {
-                    Log.i("ttag", crew.getBackdropPath()+"");
-                    if(crew.getBackdropPath() != null) {
-                        Result res = new Result();
-                        res.setPosterPath(crew.getPosterPath());
-                        results.add(res);
-                    }
-                }*/
-                //results.addAll((ArrayList<Result>) movieApiResponse.getResults());
-                    //Log.i("ttag", movieApiResponse.getResults().get(0).getBackdropPath());
-                    results.addAll((ArrayList<Result>) response.body().getCrew());
-                    adapter.setMovies(results);
 
-                    for(Result movie: results)
-                    {
-                        viewModel.insertMovie(movie);
-                    }
-            }
-
-            @Override
-            public void onFailure(Call<Example> call, Throwable t) {
-
-            }
-        });
-    }
-    public void getMovieByPersonName(String name) {
-        MovieApiService movieApiService = RetrofitInstance.getService();
-        Call<MovieApiResponse> call = movieApiService.getMovieByPersonName(getString(R.string.api_key), name);
-        call.enqueue(new Callback<MovieApiResponse>() {
-            @Override
-            public void onResponse(Call<MovieApiResponse> call, Response<MovieApiResponse> response)
-            {
-                getMovieByPersonId(response.body().getResults().get(0).getId());
-
-            }
-
-            @Override
-            public void onFailure(Call<MovieApiResponse> call, Throwable t) {
-
-            }
-        });
-    }
-
-    public void getMovieById(int key) {
-        MovieApiService movieApiService = RetrofitInstance.getService();
-        Call<Result> call = movieApiService.getMovieById(key, getString(R.string.api_key));
-        call.enqueue(new Callback<Result>() {
-
-            @Override
-            public void onResponse(Call<Result> call, Response<Result> response) {
-                //Toast.makeText(getApplicationContext(), response.body().getTitle()+" "+response.body().getOriginalLanguage(), Toast.LENGTH_SHORT).show();
-            }
-
-            @Override
-            public void onFailure(Call<Result> call, Throwable t) {
-
-            }
-        });
-    }
 
 
     //Retrofit method

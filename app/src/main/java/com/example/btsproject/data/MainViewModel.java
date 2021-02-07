@@ -61,7 +61,7 @@ public class MainViewModel extends AndroidViewModel
             }
         });
 
-
+        Log.i("info",r.getOriginalTitle());
         return r;
     }
 
