@@ -25,6 +25,7 @@
         android:id="@+id/textViewLabelTitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginLeft="8sp"
         android:text="@string/title"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/imageViewAddToFavourite" />
@@ -34,6 +35,7 @@
         android:id="@+id/textViewTitle"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_marginRight="8sp"
         android:text="TextView"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="@+id/guidelineCenter"
@@ -43,6 +45,7 @@
         android:id="@+id/textViewLabelOriginalTitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginLeft="8sp"
         android:text="@string/original_title"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textViewTitle" />
@@ -51,6 +54,7 @@
         android:id="@+id/textViewOriginalTitle"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_marginRight="8sp"
         android:text="TextView"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="@+id/guidelineCenter"
@@ -60,6 +64,7 @@
         android:id="@+id/textViewLabelRating"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginLeft="8sp"
         android:text="@string/rating"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textViewOriginalTitle" />
@@ -69,7 +74,6 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="TextView"
-        app:layout_constraintHorizontal_bias="0.299"
         app:layout_constraintStart_toStartOf="@+id/guidelineCenter"
         app:layout_constraintTop_toBottomOf="@+id/textViewOriginalTitle" />
 
@@ -77,6 +81,7 @@
         android:id="@+id/textViewLabelReleaseDate"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginLeft="8sp"
         android:text="@string/release_date"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textViewRating" />
@@ -85,6 +90,7 @@
         android:id="@+id/textViewReleaseDate"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_marginRight="8sp"
         android:text="TextView"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="@+id/guidelineCenter"
@@ -94,6 +100,7 @@
         android:id="@+id/textViewLabelDescription"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginLeft="8sp"
         android:text="@string/description"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textViewReleaseDate" />
@@ -102,6 +109,7 @@
         android:id="@+id/textViewOverview"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginLeft="8sp"
         android:text="TextView"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textViewLabelDescription" />

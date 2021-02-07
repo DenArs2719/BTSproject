@@ -4,12 +4,14 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/itemSearch"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@color/colorPrimaryDark">
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerViewPosters"
         android:layout_width="0dp"
         android:layout_height="0dp"
+        android:layout_marginTop="8dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="1.0"
@@ -19,25 +21,40 @@
 
     <EditText
         android:id="@+id/actorName"
-        android:layout_width="313dp"
-        android:layout_height="41dp"
-        android:layout_marginTop="4dp"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:background="@drawable/background_searchfield"
         android:ems="10"
         android:hint="Actor name"
         android:inputType="textPersonName"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
+        android:paddingStart="6dp"
+        android:paddingTop="8dp"
+        android:paddingEnd="6dp"
+        android:paddingBottom="8dp"
+        android:textColor="@color/white_color"
+        android:textColorHint="#B3B3B3"
+        app:layout_constraintEnd_toStartOf="@+id/buttonFind"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <Button
+    <ImageButton
         android:id="@+id/buttonFind"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        style="@android:style/Widget.DeviceDefault.ImageButton"
+        android:layout_width="38dp"
+        android:layout_height="0dp"
+        android:layout_marginEnd="8dp"
+        android:adjustViewBounds="true"
+        android:background="@drawable/searchbutton_background"
         android:onClick="onClickToSearch"
-        android:text="Search"
+        android:padding="5dp"
+        android:scaleType="fitCenter"
+        android:src="@drawable/loupe_w"
+        app:layout_constraintBottom_toBottomOf="@+id/actorName"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="1.0"
-        app:layout_constraintStart_toStartOf="@+id/actorName"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="@+id/actorName"
+        tools:src="@drawable/loupe_w"
+        tools:srcCompat="@drawable/loupe_w" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

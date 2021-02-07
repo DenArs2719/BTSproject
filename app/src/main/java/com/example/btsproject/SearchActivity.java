@@ -1,13 +1,21 @@
 package com.example.btsproject;
 
+import android.content.Context;
 import android.content.Intent;
+import android.inputmethodservice.Keyboard;
 import android.os.Bundle;
+import android.text.InputType;
+import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.inputmethod.EditorInfo;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -33,7 +41,7 @@ import retrofit2.Response;
 public class SearchActivity extends AppCompatActivity
 {
     private EditText actorName;
-    private Button search;
+    private ImageButton search;
 
     private MainViewModel viewModel;
     private ArrayList<Result> results = new ArrayList<>();
@@ -94,6 +102,21 @@ public class SearchActivity extends AppCompatActivity
         adapter.setMovies(results);
         recyclerViewPosters.setAdapter(adapter);
 
+        // Event listener on "enter" on keyboard
+        actorName.setOnEditorActionListener(new EditText.OnEditorActionListener() {
+            @Override
+            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+                if (actionId == EditorInfo.IME_ACTION_NEXT || actionId == EditorInfo.IME_ACTION_SEARCH || actionId == EditorInfo.IME_ACTION_GO) {
+                    search.performClick();
+                    // Hide keyboard
+                    closeKeyboard();
+                    actorName.clearFocus();
+                    return true;
+                }
+                return false;
+            }
+        });
+
         adapter.setOnPosterClickListener(new MovieAdapter.OnPosterClickListener() {
             @Override
             public void onPosterClick(int position) {
@@ -113,6 +136,14 @@ public class SearchActivity extends AppCompatActivity
 
     }
 
+    public void closeKeyboard() {
+        View view = this.getCurrentFocus();
+        if (view != null) {
+            InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+            imm.hideSoftInputFromWindow(view.getWindowToken(),0);
+        }
+    }
+
     public void onClickToSearch(View view)
     {
         if(actorName.getText().toString().equals(""))
@@ -125,6 +156,7 @@ public class SearchActivity extends AppCompatActivity
             results.clear();
             getMovieByPersonName(actorName.getText().toString());
         }
+        closeKeyboard();
     }
 
 
